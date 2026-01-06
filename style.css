@@ -1,0 +1,101 @@
+:root {
+    --color-primary: #0f0;
+    --color-secondary: #003300;
+    --color-alert: #ff0000;
+    --bg-color: #000;
+    --font-main: 'Courier New', Courier, monospace;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--color-primary);
+    font-family: var(--font-main);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#matrix-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0.25;
+}
+
+.terminal-window {
+    position: relative;
+    z-index: 10;
+    width: 85%;
+    max-width: 900px;
+    height: 60vh;
+    background: rgba(0, 10, 0, 0.95);
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 0 30px var(--color-secondary);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+}
+
+/* Efecto de parpadeo */
+.status-blink {
+    animation: blink 2s infinite;
+    color: var(--color-alert);
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+.top-bar {
+    border-bottom: 1px solid var(--color-secondary);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+#console-output {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-size: 14px;
+    margin-bottom: 10px;
+    padding-right: 5px;
+}
+
+/* Estilos de texto */
+.success { color: #0f0; font-weight: bold; }
+.warning { color: #ffae00; }
+.error { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+.data-row { display: block; margin-left: 15px; color: #fff; opacity: 0.9; }
+
+.input-line {
+    border-top: 1px solid var(--color-secondary);
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+input {
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    width: 100%;
+    outline: none;
+    text-transform: uppercase;
+}
+
+/* Scrollbar Hacker */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--color-secondary); }
