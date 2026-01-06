@@ -4,32 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GHOST TRACE | SYSTEM ACCESS V.4.0</title>
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* --- ESTILOS CSS (DISEÑO) --- */
+        :root { --color-primary: #0f0; --color-secondary: #003300; --color-alert: #ff0000; --bg-color: #000; --font-main: 'Courier New', Courier, monospace; }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--color-primary); font-family: var(--font-main); overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        #matrix-bg { position: absolute; top: 0; left: 0; z-index: 1; opacity: 0.25; }
+        .terminal-window { position: relative; z-index: 10; width: 85%; max-width: 900px; height: 60vh; background: rgba(0, 10, 0, 0.95); border: 1px solid var(--color-primary); box-shadow: 0 0 30px var(--color-secondary); padding: 20px; display: flex; flex-direction: column; border-radius: 4px; }
+        .status-blink { animation: blink 2s infinite; color: var(--color-alert); }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .top-bar { border-bottom: 1px solid var(--color-secondary); padding-bottom: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 0.8rem; letter-spacing: 2px; }
+        #console-output { flex-grow: 1; overflow-y: auto; font-size: 14px; margin-bottom: 10px; padding-right: 5px; }
+        .success { color: #0f0; font-weight: bold; }
+        .warning { color: #ffae00; }
+        .error { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        .data-row { display: block; margin-left: 15px; color: #fff; opacity: 0.9; }
+        .input-line { border-top: 1px solid var(--color-secondary); padding-top: 10px; display: flex; align-items: center; }
+        input { background: transparent; border: none; color: var(--color-primary); font-family: var(--font-main); font-size: 1rem; width: 100%; outline: none; text-transform: uppercase; }
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: var(--color-secondary); }
+    </style>
 </head>
 <body>
-
     <canvas id="matrix-bg"></canvas>
-
     <div class="terminal-window">
         <div class="top-bar">
             <span class="status-blink">🔴 REC: LIVE FEED</span>
             <span>ENCRYPTED CONNECTION: SHA-256</span>
         </div>
-        
         <div id="console-output">
             <div class="system-msg">Initializing GHOST_TRACE Protocol...</div>
             <div class="system-msg">Loading modules... <span class="success">[OK]</span></div>
             <br>
             <div class="info-msg">⚠️ SYSTEM READY. WAITING FOR TARGET INPUT.</div>
         </div>
-
         <div class="input-line">
             <span class="prompt">root@ghost-server:~$</span>
             <input type="text" id="command-input" placeholder="ENTER TARGET ID..." autocomplete="off" autofocus>
         </div>
     </div>
 
-    <script src="js/matrix.js"></script>
-    <script src="js/terminal.js"></script>
+    <script>
+        /* --- LÓGICA JAVASCRIPT --- */
+        // 1. Matrix Effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = "01KATIA01PATRICK01SYSTEM01HACK01";
+        const fontSize = 14; const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0"; ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 35); window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        // 2. Terminal Logic
+        const input = document.getElementById('command-input');
+        const output = document.getElementById('console-output');
+        const fakeData = { names: ["Carlos Rivera", "Jorge Mendez", "Lucia Campos", "Katia Fernandez", "Patrick Lopez"], cities: ["Lima, PE", "Bogota, CO", "CDMX, MX", "Santiago, CL", "Buenos Aires, AR"], os: ["Windows 11 Pro", "Android 15 (Rooted)", "iOS 17.2", "Kali Linux 2024"] };
+        
+        function log(html, className = "") {
+            const div = document.createElement('div'); div.innerHTML = html; if (className) div.classList.add(className);
+            output.appendChild(div); output.scrollTop = output.scrollHeight;
+        }
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        async function startHack(target) {
+            input.disabled = true; input.value = `ACCESSING TARGET: ${target}...`;
+            const steps = ["Bypassing Firewall...", "Injecting Payload...", "Decryption Keys Found...", "Accessing GPS Module...", "Downloading User Data..."];
+            for (const step of steps) { await new Promise(r => setTimeout(r, 600 + Math.random() * 500)); log(`> ${step}`); }
+            if (Math.random() > 0.8) { log("⚠️ SECURITY BREACH DETECTED! REROUTING...", "warning"); await new Promise(r => setTimeout(r, 1000)); }
+            showResults(target); input.disabled = false; input.value = ""; input.focus();
+        }
+        function showResults(target) {
+            log("<br>=== TARGET ACQUIRED ===", "success"); log(`ID: ${target}`);
+            log(`<span class="data-row">NAME: ${getRandom(fakeData.names)}</span>`);
+            log(`<span class="data-row">IP: 192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}</span>`);
+            log(`<span class="data-row">GEO: ${getRandom(fakeData.cities)}</span>`);
+            log(`<span class="data-row">OS: ${getRandom(fakeData.os)}</span>`);
+            log(`<span class="data-row">STATUS: <span class="error">COMPROMISED</span></span>`); log("=========================<br>");
+        }
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && input.value.trim() !== "") { const val = input.value; log(`root@ghost:~$ scan ${val}`, "success"); startHack(val); } });
+    </script>
 </body>
 </html>
